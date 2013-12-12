@@ -16,3 +16,16 @@ Using
 После сохранения можно запустить скрипт:
 
     python backupfiles.py
+
+**backupmysql.py**
+
+Необходимо создать файл конфигурации, например: *mysql.cnf* с содержанием:
+
+    [client]
+    host = localhost
+    user = root
+    password = rootpassword
+
+После сохранения запустить скрипт:
+
+    backupmysql.py --cnf mysql.cnf --todir /var/backups
