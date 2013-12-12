@@ -8,7 +8,7 @@ curr_date = datetime.datetime.today()
 # Текущая дата(используется для формирования имени архива)
 now_date = datetime.date.today()
 # Список того что будет архивироваться
-FilesToBackup = ['/home/vanzhiganov/test']
+FilesToBackup = []
 # Что необдохимо архивировать
 toBackup = os.path.join(os.path.curdir, 'toBackup.ls')
 # Куда необходимо архивировать
@@ -42,17 +42,17 @@ def GetListForBackup(PathForBackup):
             
 # Функция удаляет архивы старше определенной даты
 def DelOldBackup():
-   backupLs = glob.glob(os.path.join(backupTo,"*.*"))
+   backupLs = glob.glob(os.path.join(backupTo, "*.*"))
    for ls in backupLs:
        fLastChange = datetime.datetime.fromtimestamp(os.path.getmtime(ls))
        PassDay = curr_date-fLastChange
        if PassDay.days > StoreBackupCopy:
            try:
-                logging.warning(u'Удаляем файлы старше: '+str(StoreBackupCopy)+' дней')
+                logging.warning(u'Удаляем файлы старше: %s дней' % StoreBackupCopy)
                 os.remove(ls)
-                logging.warning(u'Файл '+ls+' был удален')
+                logging.warning(u'Файл %s был удален' % ls)
             except:
-                logging.error(u'Ошибка удаления файла '+ls)
+                logging.error(u'Ошибка удаления файла %s' % ls)
 
 def backup(list_backup):
     logging.warning( u'Выполняется архивация файлов...' )
