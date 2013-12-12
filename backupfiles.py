@@ -3,6 +3,13 @@
 
 import os, datetime, zipfile, glob, logging
 
+date_format = [
+    "%A %d.%m.%Y",
+    "%Y%m%d"
+]
+
+default_date_format = 1
+
 #Текущее дата/время
 curr_date = datetime.datetime.today()
 #Текущая дата(используется для формирования имени архива)
@@ -14,9 +21,9 @@ toBackup = os.path.join(os.path.curdir, 'toBackup.ls')
 #Куда необходимо архивировать
 backupTo = "/var/backups"
 #Формируем имя архива
-BackupName = now_date.strftime("%A %d.%m.%Y") + '.zip'
+BackupName = now_date.strftime(date_format[default_date_format]) + '.zip'
 #Формируем имя Лог файла
-BackupLog = now_date.strftime("%A %d.%m.%Y") + '.log'
+BackupLog = now_date.strftime(date_format[default_date_format]) + '.log'
 #Сколько дней хранить архивы
 StoreBackupCopy = 7
 
