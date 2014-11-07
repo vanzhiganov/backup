@@ -9,8 +9,6 @@ import logging
 import backup
 import configparser
 
-logging.basicConfig(format=u'[%(asctime)s] %(levelname)-8s  %(message)s', level=logging.DEBUG, filename="/var/log/backup.log")
-
 parser = OptionParser()
 parser.add_option("-c", "--config", dest="config_filename", default="config.ini", help="read from FILE", metavar="CONFIG")
 parser.add_option("-l", "--log", dest="log_filename", default="backup.log", help="write report to FILE", metavar="FILE")
@@ -22,6 +20,8 @@ config = configparser.ConfigParser()
 
 # read config file
 config.read(options.config_filename)
+
+logging.basicConfig(format=u'[%(asctime)s] %(levelname)-8s  %(message)s', level=logging.DEBUG, filename=options.log_filename)
 
 # print config.sections()
 # print config['DEFAULT']['StorageLocal']
@@ -45,33 +45,38 @@ else:
 	sys.exit()
 
 if "CompressionLevel" in config['DEFAULT']:
-	logging.info("check exists CompressionLevel: %s" % config['DEFAULT']['StorageLocal'])
+	logging.info("check exists CompressionLevel: %s [OK]" % config['DEFAULT']['CompressionLevel'])
 else:
 	logging.error("check exists CompressionLevel: ... [FAIL]")
 	logging.info("update %s: add CompressionLevel parameter to DEFAULT section" % options.config_filename)
 	sys.exit()
 
-print len(config)
+if not os.path.isdir(config['DEFAULT']['StorageLocal']):
+	logging.error("check exists local storage folder: %s [FAIL]" % config['DEFAULT']['StorageLocal'])
+	sys.exit()
+
+# if (len(config) - 1) <= 0:
+	# logging.error("no task to bakcup")
+	# sys.exit();
 
 for x in config:
-	print x
-# 	if x == "DEFAULT":
-# 		continue
-#
-# 	if not "Enabled" in config[x]:
-# 		continue
-#
-# 	(datatype, jobname) = x.split(":")
-#
-# 	if datatype == "File":
-# 		print "Backup files. Job: %s" % jobname
+	if x == "DEFAULT":
+		continue
+
+	if not "Enabled" in config[x]:
+		continue
+
+	(datatype, jobname) = x.split(":")
+
+	if datatype == "File":
+		print "Backup files. Job: %s" % jobname
 #  		# print x.split(":")[1]
 #  		# print config[x]['Directory']
 #
 #  		do = backup.File(config[x]['Directory'], "%s/%s" % (config['DEFAULT']['StorageLocal'], jobname))
 #
-# 	# if datatype == "Database":
-# 		# print "Backup database. Job: %s" % jobname
+	if datatype == "Database":
+		print "Backup database. Job: %s" % jobname
 #
 #
 # # if __name__ == '__main__':
