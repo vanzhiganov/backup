@@ -1,2 +1,4 @@
 *.pyc
-gpg
+*.gpg
+*.log
+.idea
