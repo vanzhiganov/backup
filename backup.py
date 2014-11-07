@@ -6,8 +6,11 @@ import sys
 import getopt
 from optparse import OptionParser
 import logging
+import datetime
 import backup
 import configparser
+import subprocess
+import gnupg
 
 parser = OptionParser()
 parser.add_option("-c", "--config", dest="config_filename", default="config.ini", help="read from FILE", metavar="CONFIG")
@@ -26,6 +29,12 @@ logging.basicConfig(format=u'[%(asctime)s] %(levelname)-8s  %(message)s', level=
 # print config.sections()
 # print config['DEFAULT']['StorageLocal']
 # print config.sections()
+
+# GPG
+def gpg_gen_key(email, phrase):
+	input_data = gpg.gen_key_input(name_email=email, passphrase=phrase)
+	return gpg.gen_key(input_data)
+
 
 # TODO: check exists need folders
 logging.info("check system")
@@ -55,10 +64,38 @@ if not os.path.isdir(config['DEFAULT']['StorageLocal']):
 	logging.error("check exists local storage folder: %s [FAIL]" % config['DEFAULT']['StorageLocal'])
 	sys.exit()
 
+
+# gpg test
+gpg = gnupg.GPG(gnupghome='gpg')
+
+gpg_test = True
+if not os.path.isdir("gpg"):
+	print "gpg folder not exists"
+	gpg_test = False
+else:
+	if not os.path.isfile("gpg/pubring.gpg"):
+		print "gpg pubring not exists"
+		gpg_test = False
+	else:
+		if not os.path.isfile("gpg/secring.gpg"):
+			print "gpg secring not exists"
+			gpg_test = False
+		else:
+			if not os.path.isfile("gpg/trustdb.gpg"):
+				print "gpg trustdb not exists"
+				gpg_test = False
+
+if not gpg_test:
+	input_data = gpg.gen_key_input(name_email=config['DEFAULT']['EncryptEmail'], passphrase=config['DEFAULT']['EncryptPhrase'])
+	key = gpg.gen_key(input_data)
+	logging.info("new gpg key has generated: %s" % key)
+
+
 # if (len(config) - 1) <= 0:
 	# logging.error("no task to bakcup")
 	# sys.exit();
 
+# start backup
 for x in config:
 	if x == "DEFAULT":
 		continue
@@ -69,14 +106,59 @@ for x in config:
 	(datatype, jobname) = x.split(":")
 
 	if datatype == "File":
-		print "Backup files. Job: %s" % jobname
-#  		# print x.split(":")[1]
-#  		# print config[x]['Directory']
-#
-#  		do = backup.File(config[x]['Directory'], "%s/%s" % (config['DEFAULT']['StorageLocal'], jobname))
-#
+		if config[x]['Enabled'] == "no":
+			continue
+
+		logging.info("Backup files. Job: %s" % jobname)
+
+
+		date_format = ["%A %d.%m.%Y", "%Y%m%d"]
+		default_date_format = 1
+
+		b_date = datetime.date.today().strftime(date_format[default_date_format])
+
+		b_storagelocal = config['DEFAULT']['StorageLocal']
+		b_archivename = "%s_%s_%s.tar" % (config['DEFAULT']['InstanceName'], jobname, b_date)
+		b_source = config[x]['Directory']
+		b_destination = "%s/%s" % (b_storagelocal, b_archivename)
+
+		subprocess.call(['tar', 'cfv', b_destination, b_source])
+
+		if config[x]['Compression'] == "yes":
+			subprocess.call(['gzip', b_destination])
+
+		# gpg --output doc.gpg --symmetric doc
+		# gpg -e -r email@address.com WorkPCUbuntuLinux_test_20141107.tar
+
+		# p = subprocess.Popen('tar cfv %s/%s %s' % (b_storagelocal, b_archivename, b_source), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+		# for line in p.stdout.readlines():
+			# print line, retval = p.wait()
+		# print p
+
+
+ 	# 	print x.split(":")[1]
+ 	# 	print config[x]['Directory']
+ 	# 	do = backup.File(config[x]['Directory'], "%s/%s" % (config['DEFAULT']['StorageLocal'], jobname))
+
 	if datatype == "Database":
+		if config[x]['Enabled'] == "no":
+			continue
+
 		print "Backup database. Job: %s" % jobname
+
+		date_format = ["%A %d.%m.%Y", "%Y%m%d"]
+		default_date_format = 1
+
+		b_storagelocal = config['DEFAULT']['StorageLocal']
+		b_date = datetime.date.today().strftime(date_format[default_date_format])
+		b_archivename = "%s_%s_%s_%s.sql" % (config['DEFAULT']['InstanceName'], config[x]['Engine'], config[x]['Database'], b_date)
+		b_destination = "%s/%s" % (b_storagelocal, b_archivename)
+
+		cmd = '/usr/bin/mysqldump -u%s --password=%s %s > %s' % (config[x]['User'], config[x]['Password'], config[x]['Database'], b_destination)
+		os.system(cmd)
+
+		if config[x]['Compression'] == "yes":
+			subprocess.call(['gzip', b_destination])
 #
 #
 # # if __name__ == '__main__':
