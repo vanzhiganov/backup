@@ -51,7 +51,7 @@ else:
 	logging.info("update %s: add CompressionLevel parameter to DEFAULT section" % options.config_filename)
 	sys.exit()
 
-
+print len(config)
 
 for x in config:
 	print x
