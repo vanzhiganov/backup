@@ -3,29 +3,50 @@ backup
 
 collection backup and recovery scripts
 
-Using
------
+# Using
 
-**backupfiles.py**
+## Examples
 
-Для архивации файлов необходимо создать файл *toBackup.ls* в котором необходимо перечислить директории и файлы для архивации, например:
+Show help
 
-    /var/www
-    /home
+`python backup.py --help`
 
-После сохранения можно запустить скрипт:
+Specify config file
 
-    python backupfiles.py
+`python backup.py -c config.ini`
 
-**backupmysql.py**
+Specify log file
 
-Необходимо создать файл конфигурации, например: *mysql.cnf* с содержанием:
+`python backup.py -l backup.log`
 
-    [client]
-    host = localhost
-    user = root
-    password = rootpassword
+# Configuring
 
-После сохранения запустить скрипт:
+## config file example
 
-    backupmysql.py --cnf mysql.cnf --todir /var/backups
+```
+[DEFAULT]
+StorageLocal = /tmp/storage
+Compression = yes
+CompressionLevel = 9
+
+[File:test]
+Enabled = yes
+Directory = /etc
+Compression = yes
+CompressionLevel = 9
+SavedDaily = 7
+SavedWeekly = 4
+SavedMonthly = 12
+
+[Database:test]
+Enabled = yes
+Engine = mysql
+Host = localhost
+User = root
+Password = rootpassword
+Compression = yes
+CompressionLevel = 9
+SavedDaily = 7
+SavedWeekly = 4
+SavedMonthly = 12
+```
