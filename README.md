@@ -3,13 +3,25 @@ backup
 
 collection backup and recovery scripts
 
+## features
+
+* backup files
+* backup mysql databases
+* compress archives
+* upload archives to webdav storage
+
+
 # Install
 
 `sudo apt-get install gnupg`
 
 `sudo apt-get install rng-tools`
 
+`sudo pip install configparser`
+
 `sudo pip install python-gnupg`
+
+`sudo pip install easywebdav`
 
 
 # Using
