@@ -44,12 +44,19 @@ Specify log file
 
 ## config file example
 
+### 'default' section example
+
 ```
 [DEFAULT]
+InstanceName = WorkPCUbuntuLinux
 StorageLocal = /tmp/storage
 Compression = yes
 CompressionLevel = 9
+```
 
+### example files backup
+
+```
 [File:test]
 Enabled = yes
 Directory = /etc
@@ -58,18 +65,35 @@ CompressionLevel = 9
 SavedDaily = 7
 SavedWeekly = 4
 SavedMonthly = 12
+```
 
-[Database:test]
+### example mysql database backup
+
+```
+[Database:mysql_]
 Enabled = yes
 Engine = mysql
 Host = localhost
 User = root
 Password = rootpassword
+Database = test_database
 Compression = yes
 CompressionLevel = 9
 SavedDaily = 7
 SavedWeekly = 4
 SavedMonthly = 12
+```
+
+### example webdav config
+
+```
+[REMOTE:webdav_yandex]
+Type = webdav
+Host = webdav.yandex.ru
+Port = 443
+Protocol = https
+Login = user
+Password = password
 ```
 
 # GPG keys and crypt
