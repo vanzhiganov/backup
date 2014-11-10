@@ -65,12 +65,13 @@ CompressionLevel = 9
 SavedDaily = 7
 SavedWeekly = 4
 SavedMonthly = 12
+Remote = webdav_yandex
 ```
 
 ### example mysql database backup
 
 ```
-[Database:mysql_]
+[Database:mysql_testdatabase]
 Enabled = yes
 Engine = mysql
 Host = localhost
