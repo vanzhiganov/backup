@@ -67,29 +67,30 @@ if not os.path.isdir(config['DEFAULT']['StorageLocal']):
 
 
 # gpg test
-gpg = gnupg.GPG(gnupghome='gpg')
+if config['DEFAULT']['Encrypt'] == "yes":
+    gpg = gnupg.GPG(gnupghome='gpg')
 
-gpg_test = True
-if not os.path.isdir("gpg"):
-	print "gpg folder not exists"
-	gpg_test = False
-else:
-	if not os.path.isfile("gpg/pubring.gpg"):
-		print "gpg pubring not exists"
-		gpg_test = False
-	else:
-		if not os.path.isfile("gpg/secring.gpg"):
-			print "gpg secring not exists"
-			gpg_test = False
-		else:
-			if not os.path.isfile("gpg/trustdb.gpg"):
-				print "gpg trustdb not exists"
-				gpg_test = False
+    gpg_test = True
+    if not os.path.isdir("gpg"):
+        print "gpg folder not exists"
+        gpg_test = False
+    else:
+        if not os.path.isfile("gpg/pubring.gpg"):
+            print "gpg pubring not exists"
+            gpg_test = False
+        else:
+            if not os.path.isfile("gpg/secring.gpg"):
+                print "gpg secring not exists"
+                gpg_test = False
+            else:
+                if not os.path.isfile("gpg/trustdb.gpg"):
+                    print "gpg trustdb not exists"
+                    gpg_test = False
 
-if not gpg_test:
-	input_data = gpg.gen_key_input(name_email=config['DEFAULT']['EncryptEmail'], passphrase=config['DEFAULT']['EncryptPhrase'])
-	key = gpg.gen_key(input_data)
-	logging.info("new gpg key has generated: %s" % key)
+    if not gpg_test:
+        input_data = gpg.gen_key_input(name_email=config['DEFAULT']['EncryptEmail'], passphrase=config['DEFAULT']['EncryptPhrase'])
+        key = gpg.gen_key(input_data)
+        logging.info("new gpg key has generated: %s" % key)
 
 
 # if (len(config) - 1) <= 0:
