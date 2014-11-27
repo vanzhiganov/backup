@@ -66,6 +66,7 @@ SavedDaily = 7
 SavedWeekly = 4
 SavedMonthly = 12
 Remote = webdav_yandex
+SaveLocal = yes
 ```
 
 ### example mysql database backup
@@ -83,6 +84,7 @@ CompressionLevel = 9
 SavedDaily = 7
 SavedWeekly = 4
 SavedMonthly = 12
+SaveLocal = no
 ```
 
 ### example webdav config
