@@ -191,6 +191,33 @@ for x in config:
 
         if config[x]['Compression'] == "yes":
             subprocess.call(['gzip', b_destination])
+            b_destination = "%s.gz" % b_destination
+            
+        if "Remote" in config[x]:
+            remote = {}
+            remote['name'] = 'REMOTE:%s' % config[x]['Remote']
+
+            if remote['name'] in config:
+                remote['type'] = config[remote['name']]['Type']
+                remote['host'] = config[remote['name']]['Host']
+                remote['port'] = int(config[remote['name']]['Port'])
+                remote['protocol'] = config[remote['name']]['Protocol']
+                remote['login'] = config[remote['name']]['Login']
+                remote['password'] = config[remote['name']]['Password']
+                remote['destination'] = "%s/%s/%s" % (config['DEFAULT']['InstanceName'], jobname, b_archivename)
+
+                # connect to webdav
+                webdav = easywebdav.connect(remote['host'], port=remote['port'], protocol=remote['protocol'], username=remote['login'], password=remote['password'])
+                # todo: check exists folder
+                if not webdav.exists(config['DEFAULT']['InstanceName']):
+                    webdav.mkdir(config['DEFAULT']['InstanceName'])
+
+                if not webdav.exists(config['DEFAULT']['InstanceName'] + "/" + jobname):
+                    webdav.mkdir(config['DEFAULT']['InstanceName']+"/"+jobname)
+
+                # upload archive to webdav
+                webdav.upload(b_destination, remote['destination'])
+
 #
 #
 # # if __name__ == '__main__':
