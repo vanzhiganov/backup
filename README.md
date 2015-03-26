@@ -1,6 +1,8 @@
 backup
 ======
 
+Current version: v1.1.4
+
 collection backup and recovery scripts
 
 ## features
@@ -22,6 +24,30 @@ collection backup and recovery scripts
 `sudo pip install python-gnupg`
 
 `sudo pip install easywebdav`
+
+
+## For Postgresql
+
+`createuser <backup_username>`
+
+`alter user <backup_username> password '<password>';`
+
+
+`GRANT SELECT ON ALL TABLES IN SCHEMA public TO <backup_usermame>;`
+
+`GRANT CONNECT ON DATABASE <database_name> to <backup_usermame>;`
+
+`GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO <backup_usermame>;`
+
+
+for pg_basebackup (EXPERIMENTAL)
+
+pg_hba.conf
+`local   replication     postgres                                md5`
+
+postgresql.conf
+`max_wal_senders = 1`
+`wal_level = hot_standby`
 
 
 # Using

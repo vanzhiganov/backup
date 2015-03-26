@@ -27,10 +27,6 @@ config.read(options.config_filename)
 
 logging.basicConfig(format=u'[%(asctime)s] %(levelname)-8s  %(message)s', level=logging.DEBUG, filename=options.log_filename)
 
-# print config.sections()
-# print config['DEFAULT']['StorageLocal']
-# print config.sections()
-
 # GPG
 def gpg_gen_key(email, phrase):
     input_data = gpg.gen_key_input(name_email=email, passphrase=phrase)
@@ -167,11 +163,6 @@ for x in config:
                 # upload archive to webdav
                 webdav.upload(b_destination, remote['destination'])
 
-
-    # 	print x.split(":")[1]
-    # 	print config[x]['Directory']
-    # 	do = backup.File(config[x]['Directory'], "%s/%s" % (config['DEFAULT']['StorageLocal'], jobname))
-
     if datatype == "Database":
         if config[x]['Enabled'] == "no":
             continue
@@ -186,8 +177,29 @@ for x in config:
         b_archivename = "%s_%s_%s_%s.sql" % (config['DEFAULT']['InstanceName'], config[x]['Engine'], config[x]['Database'], b_date)
         b_destination = "%s/%s" % (b_storagelocal, b_archivename)
 
-        cmd = '/usr/bin/mysqldump -u%s --password=%s %s > %s' % (config[x]['User'], config[x]['Password'], config[x]['Database'], b_destination)
-        os.system(cmd)
+        if config[x]['Engine'] == "mysql":
+            mc = {
+                "host": config[x]['Host'],
+                "user": config[x]['User'],
+                "password": config[x]['Password'],
+                "database": config[x]['Database'],
+                "destination": b_destination
+            }
+            cmd = '/usr/bin/mysqldump -h %(host)s -u%(user)s --password=%(password)s %(database)s > %(destination)s' % mc
+            os.system(cmd)
+        elif config[x]['Engine'] == "mysql":
+            pc = {
+                "user": config[x]['User'],
+                "password": config[x]['Password'],
+                "host": config[x]['Host'],
+                "database": config[x]['Database'],
+                "destination": b_destination,
+            }
+
+            cmd = """PGPASSWORD="%(password)s"; pg_dump -h %(host)s -U%(user)s %(database)s > %(destination)s""" % pc
+            os.system(cmd)
+        else:
+            continue
 
         if config[x]['Compression'] == "yes":
             subprocess.call(['gzip', b_destination])
