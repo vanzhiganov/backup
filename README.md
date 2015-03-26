@@ -9,6 +9,7 @@ collection backup and recovery scripts
 
 * backup files
 * backup mysql databases
+* backup pgsql databases
 * compress archives
 * upload archives to webdav storage
 
