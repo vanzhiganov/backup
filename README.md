@@ -114,6 +114,19 @@ SavedMonthly = 12
 SaveLocal = no
 ```
 
+### example postgresql database backup
+
+```
+[Database:test_pgsql]
+Enabled = yes
+Engine = pgsql
+Host = localhost
+User = backup_user
+Password = BacK8OLpU@r
+Database = myappdatabase
+Remote = webdav_yandex
+```
+
 ### example webdav config
 
 ```
