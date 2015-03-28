@@ -5,7 +5,7 @@ Current version: v1.1.4
 
 collection backup and recovery scripts
 
-## features
+## Features
 
 * backup files
 * backup mysql databases
@@ -13,6 +13,11 @@ collection backup and recovery scripts
 * compress archives
 * upload archives to webdav storage
 
+## Tested
+
+* CentOS 6.6 Server
+* Fedora Linux 21 Desktop
+* Ubuntu 14.04 LTS Server
 
 # Install
 
