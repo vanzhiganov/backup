@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Backup by vanzhiganov</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Backup</h1>
+        <p>Yet another backup tool</p>
+
+        <p class="view"><a href="https://github.com/vanzhiganov/backup">View the Project on GitHub <small>vanzhiganov/backup</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/vanzhiganov/backup/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/vanzhiganov/backup/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/vanzhiganov/backup">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="backup" class="anchor" href="#backup" aria-hidden="true"><span class="octicon octicon-link"></span></a>backup</h1>
+
+<p>Current version: v1.1.4</p>
+
+<p>collection backup and recovery scripts</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>backup files</li>
+<li>backup mysql databases</li>
+<li>backup pgsql databases</li>
+<li>compress archives</li>
+<li>upload archives to webdav storage</li>
+</ul>
+
+<h2>
+<a id="tested" class="anchor" href="#tested" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tested</h2>
+
+<ul>
+<li>CentOS 6.6 Server</li>
+<li>Fedora Linux 21 Desktop</li>
+<li>Ubuntu 14.04 LTS Server</li>
+</ul>
+
+<h1>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h1>
+
+<p><code>sudo apt-get install gnupg</code></p>
+
+<p><code>sudo apt-get install rng-tools</code></p>
+
+<p><code>sudo pip install configparser</code></p>
+
+<p><code>sudo pip install python-gnupg</code></p>
+
+<p><code>sudo pip install easywebdav</code></p>
+
+<h2>
+<a id="for-postgresql" class="anchor" href="#for-postgresql" aria-hidden="true"><span class="octicon octicon-link"></span></a>For Postgresql</h2>
+
+<p><code>createuser &lt;backup_username&gt;</code></p>
+
+<p><code>alter user &lt;backup_username&gt; password '&lt;password&gt;';</code></p>
+
+<p><code>GRANT SELECT ON ALL TABLES IN SCHEMA public TO &lt;backup_usermame&gt;;</code></p>
+
+<p><code>GRANT CONNECT ON DATABASE &lt;database_name&gt; to &lt;backup_usermame&gt;;</code></p>
+
+<p><code>GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO &lt;backup_usermame&gt;;</code></p>
+
+<p>for pg_basebackup (EXPERIMENTAL)</p>
+
+<p>pg_hba.conf
+<code>local   replication     postgres                                md5</code></p>
+
+<p>postgresql.conf
+<code>max_wal_senders = 1</code>
+<code>wal_level = hot_standby</code></p>
+
+<h1>
+<a id="using" class="anchor" href="#using" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using</h1>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>Show help</p>
+
+<p><code>python backup.py --help</code></p>
+
+<p>Specify config file</p>
+
+<p><code>python backup.py -c config.ini</code></p>
+
+<p>Specify log file</p>
+
+<p><code>python backup.py -l backup.log</code></p>
+
+<h1>
+<a id="configuring" class="anchor" href="#configuring" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuring</h1>
+
+<h2>
+<a id="config-file-example" class="anchor" href="#config-file-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>config file example</h2>
+
+<h3>
+<a id="default-section-example" class="anchor" href="#default-section-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>'default' section example</h3>
+
+<pre><code>[DEFAULT]
+InstanceName = WorkPCUbuntuLinux
+StorageLocal = /tmp/storage
+Compression = yes
+CompressionLevel = 9
+</code></pre>
+
+<h3>
+<a id="example-files-backup" class="anchor" href="#example-files-backup" aria-hidden="true"><span class="octicon octicon-link"></span></a>example files backup</h3>
+
+<pre><code>[File:test]
+Enabled = yes
+Directory = /etc
+Compression = yes
+CompressionLevel = 9
+SavedDaily = 7
+SavedWeekly = 4
+SavedMonthly = 12
+Remote = webdav_yandex
+SaveLocal = yes
+</code></pre>
+
+<h3>
+<a id="example-mysql-database-backup" class="anchor" href="#example-mysql-database-backup" aria-hidden="true"><span class="octicon octicon-link"></span></a>example mysql database backup</h3>
+
+<pre><code>[Database:mysql_testdatabase]
+Enabled = yes
+Engine = mysql
+Host = localhost
+User = root
+Password = rootpassword
+Database = test_database
+Compression = yes
+CompressionLevel = 9
+SavedDaily = 7
+SavedWeekly = 4
+SavedMonthly = 12
+SaveLocal = no
+</code></pre>
+
+<h3>
+<a id="example-postgresql-database-backup" class="anchor" href="#example-postgresql-database-backup" aria-hidden="true"><span class="octicon octicon-link"></span></a>example postgresql database backup</h3>
+
+<pre><code>[Database:test_pgsql]
+Enabled = yes
+Engine = pgsql
+Host = localhost
+User = backup_user
+Password = BacK8OLpU@r
+Database = myappdatabase
+Remote = webdav_yandex
+</code></pre>
+
+<h3>
+<a id="example-webdav-config" class="anchor" href="#example-webdav-config" aria-hidden="true"><span class="octicon octicon-link"></span></a>example webdav config</h3>
+
+<pre><code>[REMOTE:webdav_yandex]
+Type = webdav
+Host = webdav.yandex.ru
+Port = 443
+Protocol = https
+Login = user
+Password = password
+</code></pre>
+
+<h1>
+<a id="gpg-keys-and-crypt" class="anchor" href="#gpg-keys-and-crypt" aria-hidden="true"><span class="octicon octicon-link"></span></a>GPG keys and crypt</h1>
+
+<h2>
+<a id="prepare-gpg-keys" class="anchor" href="#prepare-gpg-keys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prepare GPG keys</h2>
+
+<p><code>gpg --gen-key</code></p>
+
+<p>Make few steps and gpg-key will be generated</p>
+
+<p>In the next step we need to change trust level for user,</p>
+
+<p><code>gpg --sign-key email@address.com</code></p>
+
+<p>After that you fully trust the key.</p>
+
+<h3>
+<a id="trusting-levels" class="anchor" href="#trusting-levels" aria-hidden="true"><span class="octicon octicon-link"></span></a>Trusting levels</h3>
+
+<pre><code>1 = I don't know or won't say
+2 = I do NOT trust
+3 = I trust marginally
+4 = I trust fully
+5 = I trust ultimately
+</code></pre>
+
+<h2>
+<a id="decrypt-archive" class="anchor" href="#decrypt-archive" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decrypt archive</h2>
+
+<p><code>gpg -r email@address.com --decrypt-files WorkPCUbuntuLinux_test_20141107.tar.gpg</code></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/vanzhiganov">vanzhiganov</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
