@@ -203,6 +203,9 @@ for x in config:
 
         if config[x]['Compression'] == "yes":
             subprocess.call(['gzip', b_destination])
+            # archive filename
+            b_archivename = "%s.gz" % b_archivename
+            # archive filename with path
             b_destination = "%s.gz" % b_destination
             
         if "Remote" in config[x]:
