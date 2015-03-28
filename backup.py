@@ -187,7 +187,7 @@ for x in config:
             }
             cmd = '/usr/bin/mysqldump -h %(host)s -u%(user)s --password=%(password)s %(database)s > %(destination)s' % mc
             os.system(cmd)
-        elif config[x]['Engine'] == "mysql":
+        elif config[x]['Engine'] == "pgsql":
             pc = {
                 "user": config[x]['User'],
                 "password": config[x]['Password'],
