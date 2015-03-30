@@ -196,7 +196,7 @@ for x in config:
                 "destination": b_destination,
             }
 
-            cmd = """PGPASSWORD="%(password)s"; pg_dump -h %(host)s -U%(user)s %(database)s > %(destination)s""" % pc
+            cmd = """PGPASSWORD="%(password)s" pg_dump -h %(host)s -U%(user)s %(database)s > %(destination)s""" % pc
             os.system(cmd)
         else:
             continue
