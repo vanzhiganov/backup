@@ -12,6 +12,7 @@ collection backup and recovery scripts
 * backup pgsql databases
 * compress archives
 * upload archives to webdav storage
+* upload archives to ftp server
 
 ## Tested
 
