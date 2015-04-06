@@ -1,7 +1,7 @@
 backup
 ======
 
-Current version: v1.1.4
+Current version: v1.1.5
 
 collection backup and recovery scripts
 
@@ -30,6 +30,8 @@ collection backup and recovery scripts
 `sudo pip install python-gnupg`
 
 `sudo pip install easywebdav`
+
+`sudo pip install ftptool`
 
 
 ## For Postgresql
