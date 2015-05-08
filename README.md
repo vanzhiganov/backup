@@ -1,7 +1,7 @@
 backup
 ======
 
-Current version: v1.1.5
+Current version: v1.1.6
 
 collection backup and recovery scripts
 
