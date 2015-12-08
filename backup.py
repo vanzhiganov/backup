@@ -175,7 +175,7 @@ for x in config:
                     remote['protocol'] = config[remote['name']]['Protocol']
                     remote['login'] = config[remote['name']]['Login']
                     remote['password'] = config[remote['name']]['Password']
-                    remote['destination'] = "%s/%s/%s" % (config['DEFAULT']['InstanceName'], jobname, b_archivename)
+                    remote['destination'] = "%s/%s/%s" % (config['DEFAULT']['InstanceName'], job_name, b_archivename)
 
                     # connect to webdav
                     webdav = easywebdav.connect(remote['host'], port=remote['port'], protocol=remote['protocol'], username=remote['login'], password=remote['password'])
@@ -183,8 +183,8 @@ for x in config:
                     if not webdav.exists(config['DEFAULT']['InstanceName']):
                         webdav.mkdir(config['DEFAULT']['InstanceName'])
 
-                    if not webdav.exists(config['DEFAULT']['InstanceName'] + "/" + jobname):
-                        webdav.mkdir(config['DEFAULT']['InstanceName']+"/"+jobname)
+                    if not webdav.exists(config['DEFAULT']['InstanceName'] + "/" + job_name):
+                        webdav.mkdir(config['DEFAULT']['InstanceName']+"/"+job_name)
 
                     # upload archive to webdav
                     webdav.upload(b_destination, remote['destination'])
@@ -194,7 +194,7 @@ for x in config:
                     #remote['protocol'] = config[remote['name']]['Protocol']
                     remote['login'] = config[remote['name']]['Login']
                     remote['password'] = config[remote['name']]['Password']
-                    remote['destination'] = "%s/%s/%s" % (config['DEFAULT']['InstanceName'], jobname, b_archivename)
+                    remote['destination'] = "%s/%s/%s" % (config['DEFAULT']['InstanceName'], job_name, b_archivename)
 
                     ftp = FTP(remote['host'])
                     ftp.login(remote['login'], remote['password'])
@@ -206,13 +206,13 @@ for x in config:
                     except:# Exception as e:
                         print "oops 1"
 
-                    #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + jobname):
+                    #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + job_name):
                     try:
-                        ftp.mkd(config['DEFAULT']['InstanceName']+"/"+jobname)
+                        ftp.mkd(config['DEFAULT']['InstanceName']+"/"+job_name)
                     except:# Exception as e:
                         print "oops 2"
 
-                    ftp.cwd(config['DEFAULT']['InstanceName']+"/"+jobname)
+                    ftp.cwd(config['DEFAULT']['InstanceName']+"/"+job_name)
 
                     with open(b_destination, 'rb') as ftpup:
                         ftp.storbinary('STOR ' + b_archivename, ftpup)
@@ -314,13 +314,13 @@ for x in config:
                     except:# Exception as e:
                         print "oops 1"
 
-                    #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + jobname):
+                    #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + job_name):
                     try:
                         ftp.mkd(config['DEFAULT']['InstanceName'] + "/" + job_name)
                     except:# Exception as e:
                         print "oops 3"
 
-                    #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + jobname):
+                    #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + job_name):
                     try:
                         ftp.mkd(config['DEFAULT']['InstanceName'] + "/" + job_name + "/" + current_date)
                     except:# Exception as e:
