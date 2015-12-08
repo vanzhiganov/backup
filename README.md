@@ -22,15 +22,7 @@ collection backup and recovery scripts
 
 # Install
 
-`sudo apt-get install gnupg`
-
-`sudo apt-get install rng-tools`
-
-`sudo pip install configparser`
-
-`sudo pip install python-gnupg`
-
-`sudo pip install easywebdav`
+`sudo apt-get install gnupg python-gnupg python-configparser python-easywebdav rng-tools`
 
 `sudo pip install ftptool`
 
