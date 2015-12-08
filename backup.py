@@ -258,7 +258,7 @@ for x in config:
         # check for compression
         if config[x]['Compression'] == "yes":
             # TODO: add compression level
-            subprocess.call(['gzip', b_destination])
+            subprocess.call(['gzip', archive_local_destination])
             # example: mysql_mydatabase.sql.gz
             archive_name = "%s.gz" % archive_name
             # example: /var/backups/instance/20100101/mysql_mydatabase.sql.gz
