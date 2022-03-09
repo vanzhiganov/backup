@@ -32,7 +32,7 @@ class File:
             for file in os.listdir(directory):
 
                 path = os.path.join(directory, file)
-                print path
+                print (path)
                 if not os.path.isdir(path):
                     self.source_files.append(path)
                 else:
@@ -59,4 +59,4 @@ class File:
 
 class Database:
 	def __init__(self):
-		print ""
+		pass
