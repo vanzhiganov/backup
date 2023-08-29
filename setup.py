@@ -1,18 +1,19 @@
-#!/usr/bin/env python
-
 from setuptools import setup
 
 setup(
-    name='backup',
-    version='1.1.7',
+    name='elbackup',
+    version='2.0.0',
     author='Vyacheslav Anzhiganov',
-    author_email='hello@anzhiganov.com',
+    author_email='vanzhiganov@ya.ru',
     package_data={},
     scripts=[
-        'backup.py',
+        'elbackup.py',
     ],
     packages=[
+        "elbackup"
     ],
     install_requires=[
+        "python-gnupg",
+        "easywebdav2"
     ]
 )

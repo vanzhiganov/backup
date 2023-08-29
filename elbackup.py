@@ -1,45 +1,19 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 import sys
 import getopt
 from optparse import OptionParser
 import logging
 import datetime
-import backup
 import configparser
 import subprocess
 import gnupg
-import easywebdav
+import easywebdav2
 from ftplib import FTP
-
-
-def BackupMysql(host, user, password, database, destination):
-    cmd = '/usr/bin/mysqldump -h %(host)s -u%(user)s --password=%(password)s %(database)s > %(destination)s' % {
-        "host": host,
-        "user": user,
-        "password": password,
-        "database": database,
-        "destination": destination
-    }
-    os.system(cmd)
-
-
-def BackupPgsql(host, user, password, database, destination):
-    cmd = """PGPASSWORD="%(password)s" pg_dump -h %(host)s -U%(user)s %(database)s > %(destination)s""" % {
-        "host": host,
-        "user": user,
-        "password": password,
-        "database": database,
-        "destination": destination,
-    }
-    os.system(cmd)
-
+from elbackup.src import BackupMysql, BackupPgsql
 
 parser = OptionParser()
 parser.add_option("-c", "--config", dest="config_filename", default="config.ini", help="read from FILE", metavar="CONFIG")
-parser.add_option("-l", "--log", dest="log_filename", default="backup.log", help="write report to FILE", metavar="FILE")
+parser.add_option("-l", "--log", dest="log_filename", default="elbackup.log", help="write report to FILE", metavar="FILE")
 parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help="don't print status messages to stdout")
 
 (options, args) = parser.parse_args()
@@ -92,19 +66,19 @@ if config['DEFAULT']['Encrypt'] == "yes":
 
     gpg_test = True
     if not os.path.isdir("gpg"):
-        print "gpg folder not exists"
+        print("gpg folder not exists")
         gpg_test = False
     else:
         if not os.path.isfile("gpg/pubring.gpg"):
-            print "gpg pubring not exists"
+            print("gpg pubring not exists")
             gpg_test = False
         else:
             if not os.path.isfile("gpg/secring.gpg"):
-                print "gpg secring not exists"
+                print("gpg secring not exists")
                 gpg_test = False
             else:
                 if not os.path.isfile("gpg/trustdb.gpg"):
-                    print "gpg trustdb not exists"
+                    print("gpg trustdb not exists")
                     gpg_test = False
 
     if not gpg_test:
@@ -117,7 +91,7 @@ if config['DEFAULT']['Encrypt'] == "yes":
     # logging.error("no task to bakcup")
     # sys.exit();
 
-# start backup
+# start elbackup
 for x in config:
     if x == "DEFAULT":
         continue
@@ -178,7 +152,7 @@ for x in config:
                     remote['destination'] = "%s/%s/%s" % (config['DEFAULT']['InstanceName'], job_name, b_archivename)
 
                     # connect to webdav
-                    webdav = easywebdav.connect(remote['host'], port=remote['port'], protocol=remote['protocol'], username=remote['login'], password=remote['password'])
+                    webdav = easywebdav2.connect(remote['host'], port=remote['port'], protocol=remote['protocol'], username=remote['login'], password=remote['password'])
                     # todo: check exists folder
                     if not webdav.exists(config['DEFAULT']['InstanceName']):
                         webdav.mkdir(config['DEFAULT']['InstanceName'])
@@ -204,13 +178,13 @@ for x in config:
                     try:
                         ftp.mkd(config['DEFAULT']['InstanceName'])
                     except:# Exception as e:
-                        print "oops 1"
+                        print("oops 1")
 
                     #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + job_name):
                     try:
                         ftp.mkd(config['DEFAULT']['InstanceName']+"/"+job_name)
                     except:# Exception as e:
-                        print "oops 2"
+                        print("oops 2")
 
                     ftp.cwd(config['DEFAULT']['InstanceName']+"/"+job_name)
 
@@ -222,7 +196,7 @@ for x in config:
         if config[x]['Enabled'] == "no":
             continue
 
-        print "Backup database. Job: %s" % job_name
+        print("Backup database. Job: %s" % job_name)
 
         date_format = ["%A %d.%m.%Y", "%Y%m%d"]
         default_date_format = 1
@@ -239,7 +213,7 @@ for x in config:
         # example: /var/backups/instance/job/20100101/mysql_mydatabase.sql
         archive_local_destination = archive_path + '/' + archive_name
 
-        # make backup
+        # make elbackup
         if config[x]['Engine'] == "mysql":
             # create folder
             subprocess.call(['mkdir', '-p', archive_path])
@@ -279,10 +253,13 @@ for x in config:
                     remote['login'] = config[remote['name']]['Login']
                     remote['password'] = config[remote['name']]['Password']
                     # example: instance/job/20100101/pgsql_20100101.sql.gz
-                    remote['destination'] = "%s/%s/%s/%s" % (config['DEFAULT']['InstanceName'], job_name, current_date, archive_name)
+                    remote['destination'] = "%s/%s/%s/%s" % (
+                        config['DEFAULT']['InstanceName'], job_name, current_date, archive_name)
 
                     # connect to webdav
-                    webdav = easywebdav.connect(remote['host'], port=remote['port'], protocol=remote['protocol'], username=remote['login'], password=remote['password'])
+                    webdav = easywebdav2.connect(
+                        remote['host'], port=remote['port'], protocol=remote['protocol'], username=remote['login'],
+                        password=remote['password'])
 
                     # check exists folders
                     if not webdav.exists(config['DEFAULT']['InstanceName']):
@@ -312,19 +289,19 @@ for x in config:
                     try:
                         ftp.mkd(config['DEFAULT']['InstanceName'])
                     except:# Exception as e:
-                        print "oops 1"
+                        print("oops 1")
 
                     #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + job_name):
                     try:
                         ftp.mkd(config['DEFAULT']['InstanceName'] + "/" + job_name)
                     except:# Exception as e:
-                        print "oops 3"
+                        print("oops 3")
 
                     #if not ftp.exists(config['DEFAULT']['InstanceName'] + "/" + job_name):
                     try:
                         ftp.mkd(config['DEFAULT']['InstanceName'] + "/" + job_name + "/" + current_date)
                     except:# Exception as e:
-                        print "oops 4"
+                        print("oops 4")
 
                     ftp.cwd(config['DEFAULT']['InstanceName'] + "/" + job_name + "/" + current_date)
 
@@ -339,4 +316,4 @@ for x in config:
 
 #
 # # if __name__ == '__main__':
-#     # backup.backup().main()
+#     # elbackup.elbackup().main()

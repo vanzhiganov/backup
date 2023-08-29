@@ -1,6 +1,18 @@
 backup
 ======
 
+src
+    files
+    pgsql
+    mysql
+
+dst
+    ftp
+    webdav
+    s3
+
+
+
 Current version: v1.1.6
 
 collection backup and recovery scripts

@@ -1,8 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# file: __init__.py
-import os, datetime, zipfile, glob, logging
+import os
+import datetime
+import zipfile
+import glob
+import logging
 
 
 class File:
@@ -43,20 +43,16 @@ class File:
         # return self.source_files
 
     def backup(self):
-        # logging.warning(('Выполняется архивация файлов...').decode('utf-8'))
-        with zipfile.ZipFile(os.path.join(self.destination, self.name), 'w', compression=zipfile.ZIP_DEFLATED) as backup:
-            for l in self.source_files:
+        logging.warning("Files are being archived...")
+
+        filename = os.path.join(self.destination, self.name)
+
+        with zipfile.ZipFile(filename, 'w', compression=zipfile.ZIP_DEFLATED) as bak:
+            for line in self.source_files:
                 try:
-                    backup.write(l)
-                    # logging.info(("Add file %s into %s" % (l, backup.filename)).decode('utf-8'))
+                    bak.write(line)
+                    # logging.info(("Add file %s into %s" % (l, elbackup.filename)).decode('utf-8'))
                 except:
-                    # logging.error(("Ошибка добавления файла: %s в архив %s" % (l, backup.filename)).decode('utf-8'))
-                    logging.error("Error: file adding fail %s %s" % (l, backup.filename))
-
-            backup.close
-            logging.warning(('Архивация завершена').decode('utf-8'))
-
-
-class Database:
-	def __init__(self):
-		pass
+                    logging.error("Error: file adding fail %s %s" % (line, bak.filename))
+            bak.close()
+        logging.info("Archiving completed")

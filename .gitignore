@@ -1,4 +1,7 @@
-*.pyc
+*.py[cod]
 *.gpg
 *.log
 .idea
+.venv
+*.egg-info
+__pycache__
